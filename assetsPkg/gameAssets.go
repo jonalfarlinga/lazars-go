@@ -7,7 +7,7 @@ import (
 )
 
 var assets = EmbeddedAssets
-var PlayerSprite = mustLoadImage("image/player.png")
+var PlayerSprite = mustLoadImage("image/.png")
 
 func mustLoadImage(name string) *ebiten.Image {
 	f, err := assets.Open(name)
