@@ -2,9 +2,6 @@ package game
 
 import (
 	"fmt"
-	"lazars-go/assets"
-	"math"
-
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -15,11 +12,17 @@ type Game struct {
 	fpsLastCalculated time.Time
 	fpsCounter        int
 	fpsText           string
+	PlayerA            Player
 }
 
-var playerSprite = assets.PlayerSprite
+const (
+	ScreenHeight = 800
+	ScreenWidth = 600
+)
+
 
 func (g *Game) Update() error {
+	g.PlayerA.Move()
 	g.fpsCounter++
 	if time.Since(g.fpsLastCalculated) >= time.Second {
 		g.fpsText = fmt.Sprintf("FPS: %d", g.fpsCounter)
@@ -30,16 +33,13 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Rotate(45.0 * math.Pi / 180.0)
-	op.GeoM.Translate(150, 250)
-	screen.DrawImage(playerSprite, op)
+	g.PlayerA.Draw(screen)
 	ebitenutil.DebugPrint(screen, g.fpsText)
-    // ebitenutil.DrawRect(screen, 10, 10, 100, 20, color.Black) // Background
-    // text.Draw(screen, g.fpsText, mplusNormalFont, 15, 25, color.White)
+	// ebitenutil.DrawRect(screen, 10, 10, 100, 20, color.Black) // Background
+	// text.Draw(screen, g.fpsText, mplusNormalFont, 15, 25, color.White)
 
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return outsideWidth, outsideHeight
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return ScreenWidth, ScreenHeight
 }

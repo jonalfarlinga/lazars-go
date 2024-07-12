@@ -6,10 +6,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Game = game.Game
 
 func main() {
-	g := &Game{}
+	g := &game.Game{
+		PlayerA: *game.NewPlayer(),
+	}
 	err := ebiten.RunGame(g)
 	if err != nil {
 		panic(err)
