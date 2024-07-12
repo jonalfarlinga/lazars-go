@@ -1,13 +1,16 @@
-package assetsPkg
+package assets
 
 import (
 	"image"
+	"embed"
 	_ "image/png"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var assets = EmbeddedAssets
-var PlayerSprite = mustLoadImage("image/player.png")
+//go:embed "*"
+var assets embed.FS
+var PlayerSprite = mustLoadImage("image/tank.png")
 
 func mustLoadImage(name string) *ebiten.Image {
 	f, err := assets.Open(name)
