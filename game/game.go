@@ -12,7 +12,7 @@ type Game struct {
 	fpsLastCalculated time.Time
 	fpsCounter        int
 	fpsText           string
-	PlayerA            Player
+	PlayerA           Player
 }
 
 const (
@@ -37,7 +37,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, g.fpsText)
 	// ebitenutil.DrawRect(screen, 10, 10, 100, 20, color.Black) // Background
 	// text.Draw(screen, g.fpsText, mplusNormalFont, 15, 25, color.White)
-
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
