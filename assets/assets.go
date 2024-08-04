@@ -11,6 +11,7 @@ import (
 //go:embed "*"
 var assets embed.FS
 var PlayerSprite = mustLoadImage("image/tank.png")
+var WallSprite = mustLoadImage("image/wall.png")
 
 func mustLoadImage(name string) *ebiten.Image {
 	f, err := assets.Open(name)

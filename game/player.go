@@ -10,6 +10,7 @@ import (
 type Player struct {
 	position Vector
 	sprite   *ebiten.Image
+	speed	 float64
 }
 
 var playerSprite = assets.PlayerSprite
@@ -21,7 +22,7 @@ func NewPlayer() *Player {
 	halfW := float64(bounds.Dx()) / 2
 	halfH := float64(bounds.Dy()) / 2
 
-  	pos := Vector{
+	pos := Vector{
 		X: ScreenWidth/2 - halfW,
 		Y: ScreenHeight/2 - halfH,
 		Dir: 1,
@@ -30,25 +31,48 @@ func NewPlayer() *Player {
 	return &Player{
 		position: pos,
 		sprite: sprite,
+		speed: float64(200 / ebiten.TPS()),
 	}
 }
 
 func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(
-		-(float64(p.sprite.Bounds().Dx())/2),
-		-(float64(p.sprite.Bounds().Dy())/2),
-	)
+	xOffset := -(float64(p.sprite.Bounds().Dx())/2)
+	yOffset := -(float64(p.sprite.Bounds().Dy())/2)
+
+	op.GeoM.Translate(xOffset, yOffset)
 	op.GeoM.Rotate(p.position.Dir)
-	op.GeoM.Translate(p.position.X, p.position.Y)
+	op.GeoM.Translate(p.position.X - xOffset, p.position.Y - yOffset)
 	screen.DrawImage(p.sprite, op)
 }
 
 func (p *Player) Move() {
-	speed := float64(200 / ebiten.TPS())
-	var y float64 = 0
-	var x float64 = 0
-	var dir float64 = 0
+	x, y, dir := getMove(p.speed)
+
+	// Check for diagonal movement
+	if x != 0 && y != 0 {
+		factor := p.speed / math.Sqrt(x*x+y*y)
+		x *= factor
+		y *= factor
+	}
+
+	// set the new X,Y position
+	p.position.X = screenBound(
+		p.position.X + x,
+		ScreenWidth - (float64(p.sprite.Bounds().Dx())),
+	)
+	p.position.Y = screenBound(
+		p.position.Y + y,
+		ScreenWidth - (float64(p.sprite.Bounds().Dy())),
+	)
+
+	// set the new direction
+	p.position.Dir += dirBound(dir)
+}
+
+func getMove(speed float64) (float64, float64, float64) {
+	x, y, dir := 0.0, 0.0, 0.0
+
 	if ebiten.IsKeyPressed(ebiten.KeyS) {
 		y += speed
 	}
@@ -67,35 +91,25 @@ func (p *Player) Move() {
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		dir += 0.1
 	}
+	return x, y, dir
+}
 
-	// Check for diagonal movement
-	if x != 0 && y != 0 {
-		factor := speed / math.Sqrt(x*x+y*y)
-		x *= factor
-		y *= factor
+func screenBound(num, upperBound float64) float64 {
+	if num < 0 {
+		num = 0
 	}
+	if num > upperBound {
+		num = upperBound
+	}
+	return num
+}
 
-	p.position.X += x
-	p.position.Y += y
-
-	if p.position.X < 0 {
-		p.position.X = 0
+func dirBound(dir float64) float64 {
+	if dir > 2*math.Pi {
+		dir -= 2*math.Pi
 	}
-	if p.position.X > ScreenWidth {
-		p.position.X = ScreenWidth
+	if dir < 2*math.Pi {
+		dir += 2*math.Pi
 	}
-	if p.position.Y < 0 {
-		p.position.Y = 0
-	}
-	if p.position.Y > ScreenHeight {
-		p.position.Y = ScreenHeight
-	}
-
-	p.position.Dir += dir
-	if p.position.Dir > 2*math.Pi {
-		p.position.Dir -= 2*math.Pi
-	}
-	if p.position.Dir < 2*math.Pi {
-		p.position.Dir += 2*math.Pi
-	}
+	return dir
 }

@@ -12,12 +12,13 @@ type Game struct {
 	fpsLastCalculated time.Time
 	fpsCounter        int
 	fpsText           string
-	PlayerA            Player
+	PlayerA           Player
+	GameMap			  Map
 }
 
 const (
-	ScreenHeight = 800
-	ScreenWidth = 600
+	ScreenHeight = 320
+	ScreenWidth =  320
 )
 
 
@@ -35,6 +36,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.PlayerA.Draw(screen)
 	ebitenutil.DebugPrint(screen, g.fpsText)
+
 	// ebitenutil.DrawRect(screen, 10, 10, 100, 20, color.Black) // Background
 	// text.Draw(screen, g.fpsText, mplusNormalFont, 15, 25, color.White)
 
