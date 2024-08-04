@@ -1,6 +1,7 @@
 package game
 
 import (
+	"lazars-go/game/maps"
 	"fmt"
 	"time"
 
@@ -13,14 +14,13 @@ type Game struct {
 	fpsCounter        int
 	fpsText           string
 	PlayerA           Player
-	GameMap			  Map
+	GameMap           maps.GameMap
 }
 
 const (
 	ScreenHeight = 320
-	ScreenWidth =  320
+	ScreenWidth  = 320
 )
-
 
 func (g *Game) Update() error {
 	g.PlayerA.Move()
@@ -34,6 +34,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	g.GameMap.Draw(screen)
 	g.PlayerA.Draw(screen)
 	ebitenutil.DebugPrint(screen, g.fpsText)
 

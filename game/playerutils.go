@@ -6,11 +6,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func getVectorFromKeys() (float64, float64, float64) {
-	speed := float64(200 / ebiten.TPS())
-	var y float64 = 0
-	var x float64 = 0
-	var dir float64 = 0
+func getPlayerMove(speed float64) (float64, float64, float64) {
+	x, y, dir := 0.0, 0.0, 0.0
+
 	if ebiten.IsKeyPressed(ebiten.KeyS) {
 		y += speed
 	}
@@ -29,39 +27,25 @@ func getVectorFromKeys() (float64, float64, float64) {
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		dir += 0.1
 	}
-
-	// Handle diagonal movement
-	if x != 0 && y != 0 {
-		factor := speed / math.Sqrt(x*x+y*y)
-		x *= factor
-		y *= factor
-	}
 	return x, y, dir
 }
 
-func playerBounding(p *Player, dir float64) {
-	bounds := p.sprite.Bounds()
-	halfW := float64(bounds.Dx()) / 2
-	halfH := float64(bounds.Dy()) / 2
+func screenBound(num, upperBound float64) float64 {
+	if num < 0 {
+		num = 0
+	}
+	if num > upperBound {
+		num = upperBound
+	}
+	return num
+}
 
-	if p.position.X < 0+halfW {
-		p.position.X = 0 + halfW
+func dirBound(dir float64) float64 {
+	if dir > 2*math.Pi {
+		dir -= 2 * math.Pi
 	}
-	if p.position.X > ScreenWidth-halfW {
-		p.position.X = ScreenWidth - halfW
+	if dir < 2*math.Pi {
+		dir += 2 * math.Pi
 	}
-	if p.position.Y < 0+halfH {
-		p.position.Y = 0 + halfH
-	}
-	if p.position.Y > ScreenHeight-halfH {
-		p.position.Y = ScreenHeight - halfH
-	}
-
-	p.position.Dir += dir
-	if p.position.Dir > 2*math.Pi {
-		p.position.Dir -= 2 * math.Pi
-	}
-	if p.position.Dir < 2*math.Pi {
-		p.position.Dir += 2 * math.Pi
-	}
+	return dir
 }
