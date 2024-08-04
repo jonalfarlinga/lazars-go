@@ -39,7 +39,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// ebitenutil.DrawRect(screen, 10, 10, 100, 20, color.Black) // Background
 	// text.Draw(screen, g.fpsText, mplusNormalFont, 15, 25, color.White)
-
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {

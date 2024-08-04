@@ -2,7 +2,6 @@ package game
 
 import (
 	"lazars-go/assets"
-	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -36,6 +35,10 @@ func NewPlayer() *Player {
 }
 
 func (p *Player) Draw(screen *ebiten.Image) {
+	bounds := p.sprite.Bounds()
+	halfW := float64(bounds.Dx()) / 2
+	halfH := float64(bounds.Dy()) / 2
+
 	op := &ebiten.DrawImageOptions{}
 	xOffset := -(float64(p.sprite.Bounds().Dx())/2)
 	yOffset := -(float64(p.sprite.Bounds().Dy())/2)
