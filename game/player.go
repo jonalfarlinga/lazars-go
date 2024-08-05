@@ -15,16 +15,16 @@ type Player struct {
 
 var playerSprite = assets.PlayerSprite
 
-func NewPlayer() *Player {
+func NewPlayer(x, y float64) *Player {
 	sprite := playerSprite
 
-	bounds := sprite.Bounds()
-	halfW := float64(bounds.Dx()) / 2
-	halfH := float64(bounds.Dy()) / 2
+	// bounds := sprite.Bounds()
+	// halfW := float64(bounds.Dx()) / 2
+	// halfH := float64(bounds.Dy()) / 2
 
 	pos := Vector{
-		X:   ScreenWidth/2 - halfW,
-		Y:   ScreenHeight/2 - halfH,
+		X:   x,
+		Y:   y,
 		Dir: 1,
 	}
 

@@ -22,6 +22,15 @@ const (
 	ScreenWidth  = 320
 )
 
+func NewGame(m [][]int) *Game {
+	gameMap := *maps.NewMap(m)
+	player := *NewPlayer(float64(gameMap.PlayerAStart[0]), float64(gameMap.PlayerAStart[1]))
+	return &Game{
+		GameMap: gameMap,
+		PlayerA: player,
+	}
+}
+
 func (g *Game) Update() error {
 	g.PlayerA.Move()
 	g.fpsCounter++

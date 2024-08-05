@@ -9,18 +9,23 @@ import (
 var wallSprite = assets.WallSprite
 
 type GameMap struct {
-	walls  [][]int
-	sprite *ebiten.Image
+	walls        [][]int
+	sprite       *ebiten.Image
+	PlayerAStart []int
 }
 
-func NewMap(xTiles, yTiles int) *GameMap {
-	wallArr := Map1
+func NewMap(wallArr [][]int) *GameMap {
+	xTiles := len(wallArr) - 1
+	yTiles := len(wallArr[1])
 	wSizeX := wallSprite.Bounds().Dx()
 	wSizeY := wallSprite.Bounds().Dy()
+	playerAStart := wallArr[0]
+	playerAStart[0] *= wSizeX
+	playerAStart[1] *= wSizeY
 	sprite := ebiten.NewImage(xTiles*wSizeX, yTiles*wSizeY)
-	for y := 0; y < yTiles; y++ {
-		for x := 0; x < xTiles; x++ {
-			if wallArr[y][x] == 1 {
+	for x := 0; x < xTiles; x++ {
+		for y := 0; y < yTiles; y++ {
+			if wallArr[y+1][x] == 1 {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(x*wSizeX), float64(y*wSizeY))
 				sprite.DrawImage(wallSprite, op)
@@ -28,8 +33,9 @@ func NewMap(xTiles, yTiles int) *GameMap {
 		}
 	}
 	return &GameMap{
-		walls:  wallArr,
-		sprite: sprite,
+		walls:        wallArr,
+		sprite:       sprite,
+		PlayerAStart: playerAStart,
 	}
 }
 
