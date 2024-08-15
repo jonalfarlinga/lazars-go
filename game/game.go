@@ -2,6 +2,7 @@ package game
 
 import (
 	"lazars-go/game/maps"
+	"lazars-go/config"
 	"fmt"
 	"time"
 
@@ -18,8 +19,8 @@ type Game struct {
 }
 
 const (
-	ScreenHeight = 320
-	ScreenWidth  = 320
+	ScreenHeight = config.ScreenHeight
+	ScreenWidth = config.ScreenWidth
 )
 
 func NewGame(m [][]int) *Game {
@@ -32,7 +33,7 @@ func NewGame(m [][]int) *Game {
 }
 
 func (g *Game) Update() error {
-	g.PlayerA.Move()
+	g.PlayerA.Move(&g.GameMap)
 	g.fpsCounter++
 	if time.Since(g.fpsLastCalculated) >= time.Second {
 		g.fpsText = fmt.Sprintf("FPS: %d", g.fpsCounter)

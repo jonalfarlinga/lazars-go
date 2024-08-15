@@ -33,7 +33,7 @@ func NewMap(wallArr [][]int) *GameMap {
 		}
 	}
 	return &GameMap{
-		walls:        wallArr,
+		walls:        wallArr[1:],
 		sprite:       sprite,
 		PlayerAStart: playerAStart,
 	}
@@ -42,4 +42,8 @@ func NewMap(wallArr [][]int) *GameMap {
 func (m *GameMap) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(m.sprite, op)
+}
+
+func (m *GameMap) TileAt(x, y int) int {
+	return m.walls[y][x]
 }
