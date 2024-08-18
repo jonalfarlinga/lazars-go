@@ -1,17 +1,21 @@
-package game
+package player
 
 import (
 	"lazars-go/assets"
+	"lazars-go/config"
 	"lazars-go/game/maps"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+type Vector = config.Vector
+
 type Player struct {
 	position *Vector
 	sprite   *ebiten.Image
 	speed    float64
+	scale    float64
 	topLeft  *Vector
 	topRight *Vector
 	botLeft  *Vector
@@ -33,10 +37,11 @@ func NewPlayer(x, y float64) *Player {
 		position: pos,
 		sprite:   sprite,
 		speed:    float64(160 / ebiten.TPS()),
-		topLeft:  &Vector{0, 0, 0},
-		topRight: &Vector{0, 0, 0},
-		botLeft:  &Vector{0, 0, 0},
-		botRight: &Vector{0, 0, 0},
+		scale:    0.75,
+		topLeft:  &Vector{X: 0, Y: 0, Dir: 0},
+		topRight: &Vector{X: 0, Y: 0, Dir: 0},
+		botLeft:  &Vector{X: 0, Y: 0, Dir: 0},
+		botRight: &Vector{X: 0, Y: 0, Dir: 0},
 	}
 	player.updateCorners(player.position.X, player.position.Y)
 
@@ -46,9 +51,9 @@ func NewPlayer(x, y float64) *Player {
 func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 
-	op.GeoM.Scale(0.75, 0.75)
-	xOffset := -(float64(p.sprite.Bounds().Dx()) / 2) * .75
-	yOffset := -(float64(p.sprite.Bounds().Dy()) / 2) * .75
+	op.GeoM.Scale(p.scale, p.scale)
+	xOffset := -(float64(p.sprite.Bounds().Dx()) / 2) * p.scale
+	yOffset := -(float64(p.sprite.Bounds().Dy()) / 2) * p.scale
 
 	op.GeoM.Translate(xOffset, yOffset)
 	op.GeoM.Rotate(p.position.Dir)
@@ -62,6 +67,9 @@ func (p *Player) Move(m *maps.GameMap) {
 	// set the new direction
 	p.position.Dir += dirBound(dir)
 
+	if x == 0 && y == 0 {
+		return
+	}
 	// Check for diagonal movement
 	if x != 0 && y != 0 {
 		factor := p.speed / math.Sqrt(x*x+y*y) // full speed divided by quadratic formula
@@ -74,7 +82,7 @@ func (p *Player) Move(m *maps.GameMap) {
 		// Update X position if no collision
 		p.position.X = screenBound(
 			p.position.X+x,
-			ScreenWidth-(float64(p.sprite.Bounds().Dx())),
+			config.ScreenWidth-(float64(p.sprite.Bounds().Dx()))*p.scale,
 		)
 	}
 
@@ -82,7 +90,7 @@ func (p *Player) Move(m *maps.GameMap) {
 		// Update Y position if no collision
 		p.position.Y = screenBound(
 			p.position.Y+y,
-			ScreenWidth-(float64(p.sprite.Bounds().Dy())),
+			config.ScreenHeight-(float64(p.sprite.Bounds().Dy()))*p.scale,
 		)
 	}
 
@@ -91,16 +99,16 @@ func (p *Player) Move(m *maps.GameMap) {
 }
 
 func (p *Player) updateCorners(x, y float64) {
-	playerWidth := float64(p.sprite.Bounds().Dx()) * 0.75
-	playerHeight := float64(p.sprite.Bounds().Dy()) * 0.75
+	playerWidth := float64(p.sprite.Bounds().Dx()) * p.scale
+	playerHeight := float64(p.sprite.Bounds().Dy()) * p.scale
 
 	// Update each corner's position with offset
 	p.topLeft.X = x
 	p.topLeft.Y = y
-	p.topRight.X = x + playerWidth
-	p.topRight.Y = y
 	p.botLeft.X = x
 	p.botLeft.Y = y + playerHeight
+	p.topRight.X = x + playerWidth
+	p.topRight.Y = y
 	p.botRight.X = x + playerWidth
 	p.botRight.Y = y + playerHeight
 }

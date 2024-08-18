@@ -3,6 +3,7 @@ package game
 import (
 	"lazars-go/game/maps"
 	"lazars-go/config"
+	"lazars-go/game/player"
 	"fmt"
 	"time"
 
@@ -14,7 +15,7 @@ type Game struct {
 	fpsLastCalculated time.Time
 	fpsCounter        int
 	fpsText           string
-	PlayerA           Player
+	PlayerA           player.Player
 	GameMap           maps.GameMap
 }
 
@@ -25,7 +26,7 @@ const (
 
 func NewGame(m [][]int) *Game {
 	gameMap := *maps.NewMap(m)
-	player := *NewPlayer(float64(gameMap.PlayerAStart[0]), float64(gameMap.PlayerAStart[1]))
+	player := *player.NewPlayer(float64(gameMap.PlayerAStart[0]), float64(gameMap.PlayerAStart[1]))
 	return &Game{
 		GameMap: gameMap,
 		PlayerA: player,

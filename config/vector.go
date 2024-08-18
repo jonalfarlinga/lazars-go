@@ -1,4 +1,4 @@
-package game
+package config
 
 type Vector struct {
 	X   float64

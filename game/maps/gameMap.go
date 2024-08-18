@@ -45,5 +45,8 @@ func (m *GameMap) Draw(screen *ebiten.Image) {
 }
 
 func (m *GameMap) TileAt(x, y int) int {
+	if y < 0 || y >= len(m.walls) || x < 0 || x >= len(m.walls[y]) {
+		return 0
+	}
 	return m.walls[y][x]
 }
